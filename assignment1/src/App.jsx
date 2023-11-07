@@ -1,62 +1,86 @@
-import { useState } from "react";
-import "./App.css";
+import React, { useState } from "react";
+import uuid from "react-uuid";
+import Input from "./components/Input";
+import TodoList from "./components/TodoList";
 
 function App() {
-  const [todo, setTodo] = useState([
+  const [cards, setCards] = useState([
     {
-      id: 1,
-      title: "sample title",
-      content: "sample content",
-      isDone: "false",
+      id: uuid(),
+      title: "Sample title",
+      content: "Sample content",
+      isDone: false,
+    },
+    {
+      id: uuid(),
+      title: "Sample title",
+      content: "Sample content",
+      isDone: true,
     },
   ]);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
 
-  const handleChangeTitle = (e) => setTitle(e.target.value);
-  const handleChangeContent = (e) => setContent(e.target.value);
-  // const handleClickAddBtn = function (item) {
-  //   const newTodo = {
-  //     id: todo.length + 1,
-  //     title,
-  //     content,
-  //     isDone: "false",
-  //   };
-  //   setTodo(newTodo);
-  // };
-  const handleDeleteBtn = () => {}
-  const handleCompleteBtn = () => {}
+
+  const handleCancel = (item) => {
+    const moveToWorking = cards.map((card) => {
+      if (card.id === item.id) {
+        return { ...card, isDone: !item.isDone };
+      } else {
+        return card;
+      }
+    });
+    setCards(moveToWorking);
+  };
+
+  const handleComplete = (item) => {
+    const moveToDone = cards.map((card) => {
+      if (card.id === item.id) {
+        return { ...card, isDone: !item.isDone };
+      } else {
+        return card;
+      }
+    });
+    setCards(moveToDone);
+  };
+  const handleDelete = (id) => {
+    const cardsUpdate = cards.filter((card) => {
+      return card.id !== id;
+    });
+    setCards(cardsUpdate);
+  };
 
   return (
     <div>
-      <div>
-        제목
-        <input value={title} onChange={handleChangeTitle} type="text" />
-        내용
-        <input value={content} onChange={handleChangeContent} type="text" />
-        <button>추가하기</button>
-      </div>
-
-      <div>
-        {todo.map((item) => {
-          return (
-            <div key={item.id}>
-              <h2>{item.title}</h2>
-              <p>{item.content}</p>
-              <button onClick={handleDeleteBtn}>Delete</button>
-              <button onClick={handleCompleteBtn}>Complete</button>
-            </div>
-          );
-        })}
-      </div>
-
-      <div
+      <header
         style={{
-          backgroundColor: "yellow",
+          backgroundColor: "#e67a73",
         }}
       >
-        푸터
-      </div>
+        Todo List
+      </header>
+      <main
+        style={{
+          backgroundColor: "#b7f59f",
+        }}
+      >
+      <Input cards={cards} setCards={setCards}/>  
+        <div>
+          <TodoList cards={cards} 
+          handleComplete={handleComplete} 
+          handleDelete={handleDelete} 
+          listIsDone={false}/>
+          <TodoList cards={cards} 
+          handleComplete={handleComplete} 
+          handleDelete={handleDelete} 
+          listIsDone={true}/>
+                  </div>
+      </main>
+      <footer
+        style={{
+          backgroundColor: "#9fb5f5",
+        }}
+      >
+        footer
+      </footer>
     </div>
   );
 }
